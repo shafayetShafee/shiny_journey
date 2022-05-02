@@ -8,22 +8,21 @@ metric_ui <- function(id) {
   )
 }
 
-metric_server <- function(id, df, vbl, threshold) {
+metric_server <- function(id, df, vbl, threshold, theme) {
   moduleServer(id, function(input, output, session) {
-    
     text_server("metric", df, vbl, threshold)
-    plot_server("metric", df, vbl, threshold)
+    plot_server("metric", df, vbl, threshold, theme)
   })
-
 }
 
 
 metric_demo <- function() {
-  
   df <- data.frame(day = 1:30, arr_delay = 1:30)
   ui <- fluidPage(metric_ui("x"))
   server <- function(input, output, session) {
-    metric_server("x", reactive({df}), "arr_delay", 15)
+    metric_server("x", reactive({
+      df
+    }), "arr_delay", 15, theme = "infographic")
   }
   shinyApp(ui, server)
 }
