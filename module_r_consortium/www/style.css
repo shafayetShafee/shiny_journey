@@ -1,0 +1,19 @@
+.cbcontainer {
+   display: inline-block;
+}
+             
+.checkbox {
+   text-align: right;
+   display: inline-block;
+}
+
+.checkbox input {
+   float: right;
+   position: relative !important;
+   margin: 5px !important;
+   margin-left: 10px !important;
+}
+
+.checkbox label {
+   padding-left: 5px !important;
+}
