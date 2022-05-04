@@ -1,8 +1,10 @@
-library(shinydashboard)
+library(bs4Dash)
 library(echarts4r)
 library(dplyr)
 library(shiny)
+library(waiter)
 library(nycflights13)
+library(shinycssloaders)
 
 echart_theme <- c(
   "auritus", "azul", "bee-inspired", "blue", "caravan", "carp", "chalk",
@@ -23,7 +25,7 @@ ua_data <- nycflights13::flights %>%
   group_by(year, month, day) %>%
   summarise(
     n = n(),
-    across(ends_with("delay"), mean, na.rm = TRUE)
+    round(across(ends_with("delay"), mean, na.rm = TRUE), 2)
   ) %>%
   ungroup()
 
@@ -53,13 +55,16 @@ viz_monthly <- function(df, y_var, threshold = NULL, theme) {
       )
     ) %>%
     e_tooltip(
-      trigger = "axis",
-      formatter = e_tooltip_item_formatter("decimal")
+      formatter = htmlwidgets::JS("
+      function(params){
+        return('Day: ' + params.value[0] + '<br />Delay (min): ' + params.value[1])
+      }")
     ) %>%
     e_theme(theme) %>%
     e_legend(bottom = 0) %>%
     e_axis_labels(x = "Day", y = axis_names[[y_var]]) %>%
-    e_toolbox_feature(feature = "saveAsImage")
+    e_toolbox_feature(feature = "saveAsImage") %>% 
+    e_show_loading()
 }
 
 

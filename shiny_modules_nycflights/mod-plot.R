@@ -26,7 +26,7 @@ plot_demo <- function() {
   server <- function(input, output, session) {
     plot_server("x", reactive({
       df
-    }), "arr_delay", 10, "infographic")
+    }), "arr_delay", 10, reactive("infographic"))
   }
   shinyApp(ui, server)
 }

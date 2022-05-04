@@ -3,7 +3,7 @@
 
 metric_ui <- function(id) {
   fluidRow(
-    column(h3(text_ui(NS(id, "metric"))), width = 12, offset = 1),
+    column(h4(text_ui(NS(id, "metric"))), width = 12, offset = 1),
     column(plot_ui(NS(id, "metric")), width = 12)
   )
 }
