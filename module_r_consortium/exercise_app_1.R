@@ -1,9 +1,10 @@
-library(dplyr)
-library(reactable)
-library(shiny)
-library(fresh)
-library(bs4Dash)
-library(shinycssloaders)
+library(dplyr)           # CRAN v1.0.8
+library(shiny)           # CRAN v1.7.1
+library(fresh)           # CRAN v0.2.0
+library(waiter)          # CRAN v0.2.5
+library(bs4Dash)         # CRAN v2.0.3
+library(reactable)       # CRAN v0.2.3
+library(shinycssloaders) # CRAN v1.0.0
 
 
 # preparing ---------------------------------------------------------------
@@ -25,7 +26,7 @@ echart_theme <- c(
   "cool", "dark-blue", "dark-bold", "dark-digerati", "dark-fresh-cut",
   "dark-mushroom",
   "dark", "eduardo", "essos", "forest", "fresh-cut", "fruit", "gray", "green",
-  "halloween", "helianthus", "infographic", "inspired", "jazz", "london", "macarons",
+  "helianthus", "infographic", "inspired", "jazz", "london", "macarons",
   "macarons2", "mint", "purple-passion", "red-velvet", "red", "roma", "royal",
   "sakura", "shine", "tech-blue", "vintage", "walden", "wef", "weforum", "westeros",
   "wonderland"
@@ -43,43 +44,98 @@ theme <- create_theme(
 
 # main app ---------------------------------------------------------------
 
+## Ui -----------------------------
 ui <- dashboardPage(
-  dark = NULL,
   preloader = list(html = tagList(spin_1(), "Loading ..."), color = "#343a40"),
-  scrollToTop = TRUE,
-  freshTheme = theme,
+  title = "Shiny",
+  dark = NULL,
+  fullscreen = TRUE,
+  ### Header -----------------------------
   dashboardHeader(
-    title = "Exercise with Shiny modules - 01"
+    title = dashboardBrand(
+      title = "Simple App",
+      color = "primary",
+      href = "https://github.com/shafayetShafee",
+      image = "https://github.com/shafayetShafee.png"
+    ),
+    skin = "light",
+    status = "primary",
+    border = TRUE,
+    sidebarIcon = icon("bars"),
+    controlbarIcon = icon("th"),
+    fixed = FALSE
   ),
+  ### Sidebar ---------------------------
   dashboardSidebar(
-    width = "22%",
-    minified = FALSE,
-    skin = "white",
-    elevation = 3,
-    selectInput(
-      inputId = "dataset", label = "Select a Dataset",
-      choices = c("mtcars", "diamonds", "CO2"),
-      selected = "mtcars"
-    ),
-    conditionalPanel(
-      "input.data_tab == 'summary_table'",
-      div(checkboxInput(
-        inputId = "summary",
-        label = "Show Summary",
-        value = FALSE,
-        width = "100%"
-      ), class = "cbcontainer")
-    ),
-    conditionalPanel(
-      "input.data_tab == 'plot_tab'",
-      selectInput(
-        inputId = "theme",
-        label = "Plot theme",
-        choices = echart_theme,
-        selected = "infographic"
+    skin = "light",
+    status = "primary",
+    elevation = 4,
+    sidebarMenu(
+      id = "sidebar",
+      menuItem(
+        "About",
+        tabName = "about_tab",
+        icon = icon("home")
       ),
+      menuItem(
+        "Data",
+        tabName = "data_tab",
+        icon = icon("table")
+      ),
+      menuItem(
+        "Plots",
+        tabName = "plot_tab",
+        icon = icon("chart-area")
+      )
     )
   ),
+  ### Control-bar ----------------------
+  controlbar = dashboardControlbar(
+    skin = "light",
+    pinned = FALSE,
+    collapsed = FALSE,
+    overlay = FALSE,
+    controlbarMenu(
+      id = "controlbarmenu",
+      selected = "Controls",
+      type = "pills",
+      controlbarItem(
+        title = "Controls",
+        selectInput(
+          inputId = "dataset", label = "Select a Dataset",
+          choices = c("mtcars", "diamonds", "CO2"),
+          selected = "mtcars"
+        ),
+        conditionalPanel(
+          "input.sidebar == 'data_tab'",
+          div(checkboxInput(
+            inputId = "summary",
+            label = "Show Summary",
+            value = FALSE,
+            width = "100%"
+          ), class = "cbcontainer")
+        ),
+        conditionalPanel(
+          "input.sidebar == 'plot_tab'",
+          selectInput(
+            inputId = "theme",
+            label = "Plot theme",
+            choices = echart_theme,
+            selected = "infographic"
+          )
+        )
+      )
+    )
+  ),
+  ### Footer ------------------------
+  footer = dashboardFooter(
+    left = a(
+      href = "https://twitter.com/shafayet_shafee",
+      target = "_blank", "@shafayetShafee"
+    ),
+    right = "2022"
+  ),
+  ### Body -------------------------
   dashboardBody(
     tags$head(
       tags$link(
@@ -90,21 +146,19 @@ ui <- dashboardPage(
     ),
     fluidPage(
       fluidRow(
-        tabBox(
-          id = "data_tab", width = 12,
-          tabPanel(
-            title = "About",
+        tabItems(
+          # id = "data_tab", width = 12,
+          tabItem(
+            tabName = "about_tab",
             about_ui("about")
           ),
-          tabPanel(
-            title = "Data",
-            table_ui("table"),
-            value = "summary_table"
+          tabItem(
+            tabName = "data_tab",
+            table_ui("table")
           ),
-          tabPanel(
-            title = "Hisogram & Boxplot",
-            plot_ui("plot"),
-            value = "plot_tab"
+          tabItem(
+            tabName = "plot_tab",
+            plot_ui("plot")
           )
         )
       )
@@ -112,6 +166,8 @@ ui <- dashboardPage(
   )
 )
 
+
+## server ----------------
 server <- function(input, output, session) {
   datasetInput <- reactive({
     req(input$dataset)

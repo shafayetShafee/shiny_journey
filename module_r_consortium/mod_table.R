@@ -4,13 +4,13 @@
 
 # preparing ---------------------------------------------------------------
 
-data("diamonds", package = "ggplot2")
-data("mtcars")
-data("CO2")
-
-mtcars <- mtcars %>%
-  as_tibble() %>%
-  mutate(across(c(cyl, vs, am, gear, carb), .fns = forcats::as_factor))
+# data("diamonds", package = "ggplot2")
+# data("mtcars")
+# data("CO2")
+# 
+# mtcars <- mtcars %>%
+#   as_tibble() %>%
+#   mutate(across(c(cyl, vs, am, gear, carb), .fns = forcats::as_factor))
 
 table_summary <- function(df, col) {
   df %>%
@@ -41,7 +41,6 @@ table_ui <- function(id) {
 # table module server ------------------------------------------------------
 
 table_server <- function(id, data, show_sum) {
-  
   moduleServer(
     id,
     function(input, output, session) {
@@ -65,12 +64,16 @@ table_server <- function(id, data, show_sum) {
 
       output$table <- renderReactable({
         if (show_sum()) {
-          reactable(summary_data(), highlight = TRUE, outlined = TRUE, 
-                    bordered = TRUE, striped = TRUE)
+          reactable(summary_data(),
+            highlight = TRUE, outlined = TRUE,
+            bordered = TRUE, striped = TRUE
+          )
         } else {
-          reactable(data(), highlight = TRUE, outlined = TRUE, 
-                    bordered = TRUE, striped = TRUE,
-                    filterable = TRUE, minRows = 10)
+          reactable(data(),
+            highlight = TRUE, outlined = TRUE,
+            bordered = TRUE, striped = TRUE,
+            filterable = TRUE, minRows = 10
+          )
         }
       })
     }
