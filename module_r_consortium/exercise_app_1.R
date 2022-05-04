@@ -31,11 +31,23 @@ echart_theme <- c(
   "wonderland"
 )
 
+theme <- create_theme(
+  bs4dash_layout(
+    main_bg = "#fff3f0",
+    sidebar_width = "22%"
+  ),
+  bs4dash_color(
+    gray_900 = "#0a0a0a"
+  )
+)
 
 # main app ---------------------------------------------------------------
 
 ui <- dashboardPage(
   dark = NULL,
+  preloader = list(html = tagList(spin_1(), "Loading ..."), color = "#343a40"),
+  scrollToTop = TRUE,
+  freshTheme = theme,
   dashboardHeader(
     title = "Exercise with Shiny modules - 01"
   ),
