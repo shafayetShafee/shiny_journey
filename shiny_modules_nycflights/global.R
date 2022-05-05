@@ -1,10 +1,10 @@
-library(bs4Dash)
-library(echarts4r)
-library(dplyr)
-library(shiny)
-library(waiter)
-library(nycflights13)
-library(shinycssloaders)
+library(dplyr)           # CRAN v1.0.8
+library(shiny)           # CRAN v1.7.1
+library(waiter)          # CRAN v0.2.5
+library(bs4Dash)         # CRAN v2.0.3
+library(echarts4r)       # CRAN v0.4.3
+library(nycflights13)    # CRAN v1.0.2
+library(shinycssloaders) # CRAN v1.0.0
 
 echart_theme <- c(
   "auritus", "azul", "bee-inspired", "blue", "caravan", "carp", "chalk",
@@ -63,7 +63,7 @@ viz_monthly <- function(df, y_var, threshold = NULL, theme) {
     e_theme(theme) %>%
     e_legend(bottom = 0) %>%
     e_axis_labels(x = "Day", y = axis_names[[y_var]]) %>%
-    e_toolbox_feature(feature = "saveAsImage") %>% 
+    e_toolbox_feature(feature = "saveAsImage") %>%
     e_show_loading()
 }
 

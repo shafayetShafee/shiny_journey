@@ -1,7 +1,9 @@
 dashboardPage(
   title = "shiny app",
-  preloader = list(html = tagList(waiter::spin_1(), 
-                                  "Loading ..."), color = "#343a40"),
+  preloader = list(html = tagList(
+    waiter::spin_1(),
+    "Loading ..."
+  ), color = "#343a40"),
   dark = NULL,
   fullscreen = TRUE,
   ## Header --------------------
@@ -55,12 +57,13 @@ dashboardPage(
       type = "pills",
       controlbarItem(
         title = "Controls",
-        selectInput("month", label = NULL,
-                    choices = setNames(1:12, month.abb),
-                    selected = 1
+        selectInput("month",
+          label = "Select Month",
+          choices = setNames(1:12, month.name),
+          selected = 1
         ),
         selectInput(
-          inputId = "ec_theme", label = NULL,
+          inputId = "ec_theme", label = "Select plot theme",
           choices = echart_theme, selected = "infographic"
         )
       )
@@ -80,13 +83,16 @@ dashboardPage(
       tags$link(
         rel = "stylesheet",
         type = "text/css",
-        href = "style.css"
+        href = "style2.css"
       )
     ),
     fluidRow(
-      column(width = 12,
-             tags$div(align = "center", h1(textOutput("title")),
-                      style = "padding: 10px")
+      column(
+        width = 12,
+        tags$div(
+          align = "center", h1(textOutput("title")),
+          style = "padding: 10px"
+        )
       ),
       tabItems(
         tabItem(
